@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import "./App.css";
+import { connect } from "react-redux";
+import { loadUserDataFromFile } from "./app/thunk";
+import Login from "./app/component/Login";
+import { loadAuthedUser } from "./app/actions";
+import Questions from "./app/component/Questions";
 
-function App() {
+function App({ users, authedUser, startLoadingUser, handleChange }) {
+  useEffect(() => {
+    startLoadingUser();
+  }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {authedUser ? (
+        <Questions />
+      ) : (
+        <Login users={users} handleChange={handleChange} />
+      )}
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  users: state.users,
+  authedUser: state.authedUser.authedUser,
+});
+const mapDispatchToProps = (dispatch) => ({
+  startLoadingUser: () => dispatch(loadUserDataFromFile()),
+  handleChange: (authedUser) => dispatch(loadAuthedUser(authedUser)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
