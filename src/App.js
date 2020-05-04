@@ -1,19 +1,35 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import { connect } from "react-redux";
-import { loadUserDataFromFile } from "./app/thunk";
+import { loadUserDataFromFile, loadQsnAnswers } from "./app/thunk";
 import Login from "./app/component/Login";
-import { loadAuthedUser } from "./app/actions";
-import Questions from "./app/component/Questions";
+import { loadAuthedUser, logOutUser } from "./app/actions";
+import LandingPage from "./app/component/LandingPage";
+import Nav from "./app/component/Nav";
 
-function App({ users, authedUser, startLoadingUser, handleChange }) {
+function App({
+  users,
+  authedUser,
+  startLoadingUser,
+  startLoadingQuestions,
+  handleChange,
+  logOut,
+}) {
   useEffect(() => {
     startLoadingUser();
+    startLoadingQuestions();
   }, []);
   return (
     <div className="App">
       {authedUser ? (
-        <Questions />
+        [
+          <Nav
+            key={authedUser.name}
+            authedUser={authedUser.name}
+            onLogOut={logOut}
+          />,
+          <LandingPage />,
+        ]
       ) : (
         <Login users={users} handleChange={handleChange} />
       )}
@@ -23,11 +39,18 @@ function App({ users, authedUser, startLoadingUser, handleChange }) {
 
 const mapStateToProps = (state) => ({
   users: state.users,
-  authedUser: state.authedUser.authedUser,
+  authedUser:
+    state.authedUser === undefined ||
+    state.authedUser === null ||
+    state.authedUser.length === 0
+      ? null
+      : state.authedUser.authedUser,
 });
 const mapDispatchToProps = (dispatch) => ({
   startLoadingUser: () => dispatch(loadUserDataFromFile()),
+  startLoadingQuestions: () => dispatch(loadQsnAnswers()),
   handleChange: (authedUser) => dispatch(loadAuthedUser(authedUser)),
+  logOut: () => dispatch(logOutUser()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
