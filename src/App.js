@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import "./App.css";
 import { connect } from "react-redux";
 import { loadUserDataFromFile, loadQsnAnswers } from "./app/thunk";
 import Login from "./app/component/Login";
