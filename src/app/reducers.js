@@ -37,6 +37,9 @@ export const authedUser = (state = {}, action) => {
       return payload;
     }
     case LOG_OUT: {
+      console.log(state);
+      state = undefined;
+      console.log(state);
       return null;
     }
     default:

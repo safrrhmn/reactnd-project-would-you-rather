@@ -10,6 +10,7 @@ import { Box, Typography, AppBar } from "@material-ui/core";
 import PropTypes from "prop-types";
 import Home from "./app/component/Home";
 import LeaderBoard from "./app/component/LeaderBoard";
+import NewQuestion from "./app/component/NewQuestion";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -94,7 +95,9 @@ function App({
           <TabPanel value={value} index={0}>
             <Home users={users} questions={questions} />
           </TabPanel>
-          <TabPanel value={value} index={1} />
+          <TabPanel value={value} index={1}>
+            <NewQuestion />
+          </TabPanel>
           <TabPanel value={value} index={2}>
             <LeaderBoard users={users} questions={questions} />
           </TabPanel>

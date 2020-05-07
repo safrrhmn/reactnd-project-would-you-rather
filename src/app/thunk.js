@@ -43,3 +43,21 @@ export const submitPoll = (qsn, vote) => async (dispatch, getState) => {
     console.log(error);
   }
 };
+
+export const addNewQuestion = (optionOne, optionTwo) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    const { authedUser } = getState();
+    console.log(optionOne);
+    console.log(optionTwo);
+    await _saveQuestion({
+      optionOneText: optionOne,
+      optionTwoText: optionTwo,
+      author: authedUser.authedUser.id,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};

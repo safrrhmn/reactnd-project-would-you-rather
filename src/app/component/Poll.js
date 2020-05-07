@@ -63,18 +63,19 @@ const Poll = ({ user, question, submitPoll }) => {
           <Button
             size="small"
             onClick={() => {
-              submitPoll(question, value ? "optionOne" : "optionTwo");
-              setInd(true)
-            }
-            }
+              submitPoll(
+                question,
+                value === question.optionOne.text ? "optionOne" : "optionTwo"
+              );
+              setInd(true);
+            }}
           >
             Submit
           </Button>
-
         </CardActions>
       </CardContent>
     </Card>
   );
-  return ind ? <PollResult /> : poll;
+  return ind ? <PollResult user={user} question={question} /> : poll;
 };
 export default Poll;

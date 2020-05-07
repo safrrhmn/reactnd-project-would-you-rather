@@ -5,6 +5,7 @@ import storage from "redux-persist/lib/storage";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { users, authedUser, questions, createPoll } from "./reducers";
+import { LOG_OUT } from "./actions";
 
 const reducers = {
   users,
@@ -17,7 +18,11 @@ const persistConfig = {
   storage,
   stateReconciler: autoMergeLevel2,
 };
-const rootReducer = combineReducers(reducers);
+const appReducer = combineReducers(reducers);
+
+const rootReducer = (state, action) => {
+  return appReducer(state, action);
+};
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const configureStore = () =>
