@@ -25,7 +25,7 @@ const useStyles = makeStyles({
     marginBottom: 12,
   },
 });
-const Home = ({ users, questions, createPollQsn, createPoll }) => {
+const Home = ({ users, questions, createPollQsn, createPoll, submitPoll }) => {
   const classes = useStyles();
   const ans = (
     <Grid

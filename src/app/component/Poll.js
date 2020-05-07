@@ -9,6 +9,7 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
+import PollResult from "./PollResult";
 
 const useStyles = makeStyles({
   root: {
@@ -28,11 +29,12 @@ const useStyles = makeStyles({
 });
 const Poll = ({ user, question, submitPoll }) => {
   const [value, setValue] = React.useState(question.optionOne.text);
+  const [ind, setInd] = React.useState(false);
   const handleChange = (event) => {
     setValue(event.target.value);
   };
   const classes = useStyles();
-  return (
+  const poll = (
     <Card className={classes.root} variant="outlined">
       <CardContent>
         <Typography className={classes.title} color="textPrimary" gutterBottom>
@@ -60,15 +62,19 @@ const Poll = ({ user, question, submitPoll }) => {
         <CardActions>
           <Button
             size="small"
-            onClick={() =>
-              submitPoll(question, value ? "optionOne" : "optionTwo")
+            onClick={() => {
+              submitPoll(question, value ? "optionOne" : "optionTwo");
+              setInd(true)
+            }
             }
           >
             Submit
           </Button>
+
         </CardActions>
       </CardContent>
     </Card>
   );
+  return ind ? <PollResult /> : poll;
 };
 export default Poll;
