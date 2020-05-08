@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { createPoll } from "../../app/actions";
 import { connect } from "react-redux";
 import Poll from "./Poll";
@@ -25,8 +25,19 @@ const useStyles = makeStyles({
     marginBottom: 12,
   },
 });
-const Home = ({ users, questions, createPollQsn, createPoll, submitPoll }) => {
+const Home = ({ users, authedUser, questions, createPoll, submitPoll }) => {
   const classes = useStyles();
+
+  const [pollQsnId, setPollQsnId] = useState('')
+  const handleViewPoll = (q) => {
+    console.log(q)
+    setPollQsnId(q)
+    createPoll(q)
+  }
+  const handleSubmitPoll = (qsn, vote) => {
+    setPollQsnId('');
+    submitPoll(qsn, vote)
+  };
   const ans = (
     <Grid
       container
@@ -54,9 +65,10 @@ const Home = ({ users, questions, createPollQsn, createPoll, submitPoll }) => {
                   {q.optionTwo.text}
                 </Typography>
                 <Button
-                  onClick={(e) => createPoll(q)}
+                  onClick={(e) => handleViewPoll(e.target)}
                   size="small"
                   variant="outlined"
+                  value={q.id}
                 >
                   View Poll
                 </Button>
@@ -69,19 +81,18 @@ const Home = ({ users, questions, createPollQsn, createPoll, submitPoll }) => {
   );
 
   const poll =
-    createPollQsn === undefined ? null : (
+    pollQsnId !== '' ? null : (
       <Poll
-        user={users.find((u) => u.id === createPollQsn.author).name}
-        question={createPollQsn}
-        submitPoll={submitPoll}
+        user={authedUser}
+        question={pollQsnId}
+        submitPoll={(qsn, vote) => handleSubmitPoll(qsn, vote)}
       />
     );
-  return createPollQsn ? poll : ans;
+  return pollQsnId !== '' ? poll : ans;
 };
-
 const mapStateToProp = (state) => ({
-  createPollQsn: state.createPollSuccess.question,
-});
+  authedUser: state.authedUser.name,
+})
 const mapDispatchToProp = (dispatch) => ({
   createPoll: (qsn) => dispatch(createPoll(qsn)),
   submitPoll: (qsn, vote) => dispatch(submitPoll(qsn, vote)),
