@@ -3,13 +3,13 @@ import { createPoll } from "../../app/actions";
 import { connect } from "react-redux";
 import Poll from "./Poll";
 import { submitPoll } from "../thunk";
-import { Card, Grid } from "@material-ui/core";
+import { Card, Grid, IconButton, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     minWidth: 275,
   },
@@ -24,19 +24,20 @@ const useStyles = makeStyles({
   pos: {
     marginBottom: 12,
   },
-});
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+  },
+}));
 const Home = ({ users, authedUser, questions, createPoll, submitPoll }) => {
   const classes = useStyles();
 
-  const [pollQsnId, setPollQsnId] = useState('')
+  const [pollQsnId, setPollQsnId] = useState("");
   const handleViewPoll = (q) => {
-    console.log(q)
-    setPollQsnId(q)
-    createPoll(q)
-  }
-  const handleSubmitPoll = (qsn, vote) => {
-    setPollQsnId('');
-    submitPoll(qsn, vote)
+    console.log(questions.filter((qs) => qs.id === q)[0]);
+    setPollQsnId(questions.filter((qs) => qs.id === q)[0]);
+    createPoll(questions.filter((qs) => qs.id === q)[0]);
   };
   const ans = (
     <Grid
@@ -64,14 +65,16 @@ const Home = ({ users, authedUser, questions, createPoll, submitPoll }) => {
                 <Typography className={classes.pos} color="textSecondary">
                   {q.optionTwo.text}
                 </Typography>
-                <Button
-                  onClick={(e) => handleViewPoll(e.target)}
-                  size="small"
+                <Paper
+                  className={classes.paper}
                   variant="outlined"
                   value={q.id}
+                  onClick={(e) =>
+                    handleViewPoll(e.target.getAttribute("value"))
+                  }
                 >
                   View Poll
-                </Button>
+                </Paper>
               </CardContent>
             </Card>
           ))}
@@ -80,22 +83,14 @@ const Home = ({ users, authedUser, questions, createPoll, submitPoll }) => {
     </Grid>
   );
 
-  const poll =
-    pollQsnId !== '' ? null : (
-      <Poll
-        user={authedUser}
-        question={pollQsnId}
-        submitPoll={(qsn, vote) => handleSubmitPoll(qsn, vote)}
-      />
-    );
-  return pollQsnId !== '' ? poll : ans;
+  const poll = <Poll user={authedUser} question={pollQsnId} />;
+  return pollQsnId !== "" ? poll : ans;
 };
 const mapStateToProp = (state) => ({
-  authedUser: state.authedUser.name,
-})
+  authedUser: state.authedUser.authedUser.name,
+});
 const mapDispatchToProp = (dispatch) => ({
   createPoll: (qsn) => dispatch(createPoll(qsn)),
-  submitPoll: (qsn, vote) => dispatch(submitPoll(qsn, vote)),
 });
 
 export default connect(mapStateToProp, mapDispatchToProp)(Home);

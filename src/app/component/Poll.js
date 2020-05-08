@@ -10,6 +10,8 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import PollResult from "./PollResult";
+import { connect } from "react-redux";
+import { submitPoll } from "../thunk";
 
 const useStyles = makeStyles({
   root: {
@@ -78,4 +80,8 @@ const Poll = ({ user, question, submitPoll }) => {
   );
   return ind ? <PollResult user={user} question={question} /> : poll;
 };
-export default Poll;
+
+const mapDispatchToProps = (dispatch) => ({
+  submitPoll: (qsn, vote) => dispatch(submitPoll(qsn, vote)),
+});
+export default connect(null, mapDispatchToProps)(Poll);
